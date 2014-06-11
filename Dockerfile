@@ -1,27 +1,8 @@
-# Thanks to https://github.com/bydavy/docker-plex/blob/master/Dockerfile and https://github.com/aostanin/docker-plex/blob/master/Dockerfile
-# Use phusion/baseimage as base image. To make your builds
-# reproducible, make sure you lock down to a specific version, not
-# to `latest`! See
-# https://github.com/phusion/baseimage-docker/blob/master/Changelog.md
-# for a list of version numbers.
-FROM phusion/baseimage:0.9.10
+FROM ubuntu:14.04
+#Thanks to https://github.com/bydavy/docker-plex/blob/master/Dockerfile and https://github.com/aostanin/docker-plex/blob/master/Dockerfile
+#Thanks to Tim Haak from https://registry.hub.docker.com/u/timhaak/plex/
+MAINTAINER Eric Schultz <eric@startuperic.com>
 
-# Set correct environment variables.
-ENV HOME /root
-
-# Regenerate SSH host keys. baseimage-docker does not contain any, so you
-# have to do that yourself. You may also comment out this instruction; the
-# init system will auto-generate one during boot.
-RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
-
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
-
-# ...put your own build instructions here...
-
-MAINTAINER Tim Haak <tim@haak.co.uk>
-
-ENV HOME /root
 RUN locale-gen en_US en_US.UTF-8
 
 RUN apt-get -q update
@@ -47,6 +28,3 @@ RUN chmod u+x  /start.sh
 EXPOSE 32400
 
 ENTRYPOINT ["/start.sh"]
-
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
