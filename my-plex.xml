@@ -20,7 +20,7 @@
       </Port>
       <Port>
         <HostPort>32400</HostPort>
-        <ContainerPort>8090</ContainerPort>
+        <ContainerPort>32400</ContainerPort>
         <Protocol>tcp</Protocol>
       </Port>
     </Publish>
