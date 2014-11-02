@@ -1,22 +1,27 @@
-FROM ubuntu:14.04
-MAINTAINER Eric Schultz <eric@startuperic.com>
+FROM phusion/baseimage:0.9.11
+MAINTAINER pinion <pinion@gmail.com>
+#Thanks to Eric Schultz <eric@startuperic.com>
 #Thanks to Tim Haak <tim@haak.co.uk>
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN locale-gen en_US en_US.UTF-8
+# Set correct environment variables
+ENV HOME /root
 
-RUN apt-get -q update
-RUN apt-mark hold initscripts udev plymouth mountall
-RUN apt-get -qy --force-yes dist-upgrade
+# Use baseimage-docker's init system
+CMD ["/sbin/my_init"]
 
-RUN apt-get install -qy --force-yes curl
+# Fix a Debianism of the nobody's uid being 65534
+RUN usermod -u 99 nobody
+RUN usermod -g 100 nobody
 
-RUN echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
+RUN apt-get update -qq
 
-RUN curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key | apt-key add -
+# Install PMS dependencies
+RUN apt-get install -qy --force-yes avahi-daemon avahi-utils
 
-RUN apt-get -q update
-RUN apt-get install -qy --force-yes plexmediaserver
+# Add and install the latest PMS release for Plex Pass
+ADD https://downloads.plex.tv/plex-media-server/0.9.11.1.678-c48ffd2/plexmediaserver_0.9.11.1.678-c48ffd2_amd64.deb plex.deb
+RUN dpkg -i plex.deb
 
 VOLUME /config
 VOLUME /data
